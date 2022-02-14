@@ -54,7 +54,7 @@ function mostrarSeccion() {
 
     // Eliminar mostrar-seccion de la sección anterior
     const seccionAnterior = document.querySelector('.mostrar-seccion');
-    if( seccionAnterior ) {
+    if (seccionAnterior) {
         seccionAnterior.classList.remove('mostrar-seccion');
     }
 
@@ -63,10 +63,10 @@ function mostrarSeccion() {
 
     // Eliminar la clase de actual en el tab anterior
     const tabAnterior = document.querySelector('.tabs .actual');
-    if(tabAnterior) {
+    if (tabAnterior) {
         tabAnterior.classList.remove('actual');
     }
-   
+
     // Resalta el Tab Actual
     const tab = document.querySelector(`[data-paso="${pagina}"]`);
     tab.classList.add('actual');
@@ -75,7 +75,7 @@ function mostrarSeccion() {
 function cambiarSeccion() {
     const enlaces = document.querySelectorAll('.tabs button');
 
-    enlaces.forEach( enlace => {
+    enlaces.forEach(enlace => {
         enlace.addEventListener('click', e => {
             e.preventDefault();
             pagina = parseInt(e.target.dataset.paso);
@@ -91,14 +91,19 @@ function cambiarSeccion() {
 
 async function mostrarServicios() {
     try {
-        const resultado = await fetch('./servicios.json');
+
+        const url = 'http://localhost:3000/AppSalon_fin/servicios.php'
+
+        const resultado = await fetch(url);
         const db = await resultado.json();
+
+        console.log(db);
 
         const { servicios } = db;
 
-       // Generar el HTML
-       servicios.forEach( servicio => {
-            const { id, nombre, precio } = servicio;
+        // Generar el HTML
+        servicios.forEach(servicio => {
+            const { id, nombre, precio  } = servicio;
 
             // DOM Scripting
             // Generar nombre de servicio
@@ -126,34 +131,32 @@ async function mostrarServicios() {
 
             // Inyectarlo en el HTML
             document.querySelector('#servicios').appendChild(servicioDiv);
-       } )
-    } catch (error) {
-        console.log(error);
+        })
     }
 }
 
 
 function seleccionarServicio(e) {
-    
+
     let elemento;
     // Forzar que el  elemento al cual le damos click sea el DIV 
-    if(e.target.tagName === 'P') {
+    if (e.target.tagName === 'P') {
         elemento = e.target.parentElement;
     } else {
         elemento = e.target;
     }
 
-    if(elemento.classList.contains('seleccionado')) {
+    if (elemento.classList.contains('seleccionado')) {
         elemento.classList.remove('seleccionado');
 
-        const id = parseInt( elemento.dataset.idServicio );
+        const id = parseInt(elemento.dataset.idServicio);
 
         eliminarServicio(id);
     } else {
         elemento.classList.add('seleccionado');
 
         const servicioObj = {
-            id: parseInt( elemento.dataset.idServicio ),
+            id: parseInt(elemento.dataset.idServicio),
             nombre: elemento.firstElementChild.textContent,
             precio: elemento.firstElementChild.nextElementSibling.textContent
         }
@@ -164,14 +167,14 @@ function seleccionarServicio(e) {
 }
 
 function eliminarServicio(id) {
-   const { servicios } = cita;
-   cita.servicios = servicios.filter( servicio => servicio.id !== id );
+    const { servicios } = cita;
+    cita.servicios = servicios.filter(servicio => servicio.id !== id);
 
-   console.log(cita);
+    console.log(cita);
 }
 
 function agregarServicio(servicioObj) {
-    const { servicios } = cita;
+    const {  servicios } = cita;
     cita.servicios = [...servicios, servicioObj];
 
     console.log(cita);
@@ -198,7 +201,7 @@ function botonesPaginador() {
     const paginaSiguiente = document.querySelector('#siguiente');
     const paginaAnterior = document.querySelector('#anterior');
 
-    if(pagina  === 1) {
+    if (pagina === 1) {
         paginaAnterior.classList.add('ocultar');
     } else if (pagina === 3) {
         paginaSiguiente.classList.add('ocultar');
@@ -215,19 +218,19 @@ function botonesPaginador() {
 
 function mostrarResumen() {
     // Destructuring
-    const { nombre, fecha, hora, servicios } = cita;
+    const {  nombre, fecha, hora, servicios } = cita;
 
     // Seleccionar el resumen
     const resumenDiv = document.querySelector('.contenido-resumen');
 
     // Limpia el HTML previo
-    while( resumenDiv.firstChild ) {
-        resumenDiv.removeChild( resumenDiv.firstChild );
+    while (resumenDiv.firstChild) {
+        resumenDiv.removeChild(resumenDiv.firstChild);
     }
 
 
     // validación de objeto
-    if(Object.values(cita).includes('')) {
+    if (Object.values(cita).includes('')) {
         const noServicios = document.createElement('P');
         noServicios.textContent = 'Faltan datos de Servicios, hora, fecha o nombre';
 
@@ -237,7 +240,7 @@ function mostrarResumen() {
         resumenDiv.appendChild(noServicios);
 
         return;
-    } 
+    }
 
     const headingCita = document.createElement('H3');
     headingCita.textContent = 'Resumen de Cita';
@@ -263,9 +266,9 @@ function mostrarResumen() {
     let cantidad = 0;
 
     // Iterar sobre el arreglo de servicios
-    servicios.forEach( servicio => {
+    servicios.forEach(servicio => {
 
-        const { nombre, precio } = servicio;
+        const {  nombre, precio } = servicio;
         const contenedorServicio = document.createElement('DIV');
         contenedorServicio.classList.add('contenedor-servicio');
 
@@ -279,7 +282,7 @@ function mostrarResumen() {
         const totalServicio = precio.split('$');
         // console.log(parseInt( totalServicio[1].trim() ));
 
-        cantidad += parseInt( totalServicio[1].trim());
+        cantidad += parseInt(totalServicio[1].trim());
 
         // Colocar texto y precio en el div
         contenedorServicio.appendChild(textoServicio);
@@ -287,7 +290,7 @@ function mostrarResumen() {
 
         serviciosCita.appendChild(contenedorServicio);
 
-    } );
+    });
 
 
     resumenDiv.appendChild(headingCita);
@@ -312,11 +315,11 @@ function nombreCita() {
         const nombreTexto = e.target.value.trim();
 
         // Validación de que nombreTexto debe tener algo
-        if( nombreTexto === '' || nombreTexto.length < 3 ) {
+        if (nombreTexto === '' || nombreTexto.length < 3) {
             mostrarAlerta('Nombre no valido', 'error')
         } else {
             const alerta = document.querySelector('.alerta');
-            if(alerta) {
+            if (alerta) {
                 alerta.remove();
             }
             cita.nombre = nombreTexto;
@@ -329,7 +332,7 @@ function mostrarAlerta(mensaje, tipo) {
 
     // Si hay una alerta previa, entonces no crear otra
     const alertaPrevia = document.querySelector('.alerta');
-    if(alertaPrevia) {
+    if (alertaPrevia) {
         return;
     }
 
@@ -337,13 +340,13 @@ function mostrarAlerta(mensaje, tipo) {
     alerta.textContent = mensaje;
     alerta.classList.add('alerta');
 
-    if(tipo === 'error') {
+    if (tipo === 'error') {
         alerta.classList.add('error');
     }
 
     // Insertar en el HTML
     const formulario = document.querySelector('.formulario');
-    formulario.appendChild( alerta );
+    formulario.appendChild(alerta);
 
     // Eliminar la alerta después de 3 segundos
     setTimeout(() => {
@@ -356,8 +359,8 @@ function fechaCita() {
     fechaInput.addEventListener('input', e => {
 
         const dia = new Date(e.target.value).getUTCDay();
-        
-        if([0, 6].includes(dia)) {
+
+        if ([0, 6].includes(dia)) {
             e.preventDefault();
             fechaInput.value = '';
             mostrarAlerta('Fines de Semana no son permitidos', 'error');
@@ -388,7 +391,7 @@ function horaCita() {
         const horaCita = e.target.value;
         const hora = horaCita.split(':');
 
-        if(hora[0] < 10 || hora[0] > 18 ) {
+        if (hora[0] < 10 || hora[0] > 18) {
             mostrarAlerta('Hora no válida', 'error');
             setTimeout(() => {
                 inputHora.value = '';

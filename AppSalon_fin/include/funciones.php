@@ -27,9 +27,9 @@ function obtenerServicios() : array{
 
             $i++;
         }
-        // echo"<pre>";
-        // var_dump($servicios);
-        // echo"</pre>";
+/*         echo"<pre>";
+        var_dump($servicios);
+        echo"</pre>"; */
         
         return $servicios;
 
